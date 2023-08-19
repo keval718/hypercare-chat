@@ -1,6 +1,7 @@
 import React,{useState,useEffect} from 'react';
-import {accessToken,hypercareScope,baseURL, isPriority,limit} from '../config'
-import './ChatList.css'
+import {accessToken,hypercareScope,baseURL, isPriority,limit} from '../config';
+import axios from 'axios';
+import './ChatList.css';
 
 const ChatList=()=> {
     const [chats,setChats]=useState([]);
@@ -131,13 +132,25 @@ const ChatList=()=> {
            variables
          }
          try{
-           
+                const res = await axios.post(`${baseURL.hyperscopeURL}graphql/private`,JSON.stringify(data),{
+                    headers:headers
+                })
+
+                if(res.status===200){
+                    console.log(res.data.data.chatsForOrganization.chats)
+                }
+                else
+                {
+                    console.error("Request Failed")
+                }
+
          }
          catch(error){
            console.log(error)
          }
        }
    
+       fetchChats()
    
     },[])
   return (
