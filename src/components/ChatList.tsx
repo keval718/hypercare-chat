@@ -1,7 +1,9 @@
 import React,{useState} from 'react';
 import { Chats } from '../types';
 import { maxTitleLength } from '../config';
+import { faUserGroup } from '@fortawesome/free-solid-svg-icons';
 import './ChatList.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 interface ChatListProps{
     chatList:Chats[]
@@ -44,7 +46,12 @@ const ChatList:React.FC<ChatListProps>=({chatList})=> {
                 className={`chat-items ${activeChat === index ? 'active' : ''}`}
                 onClick={() => setActiveChat(index)}
             >
-                <div className="chat-avatar">{chat.lastMessage?.sender?.profilePic}</div>
+                <div className="chat-avatar">
+                    {chat.lastMessage.sender.profilePic}
+                    <div className='chat-avatar-icon'>
+                       {chat.type==='group'?(<FontAwesomeIcon icon={faUserGroup}/>):(null)} 
+                        </div>
+                    </div>
                 <div className="chat-details">
                     <div className="chat-title">{formatChatTitle(chat)}</div>
                     <div className="chat-message">
