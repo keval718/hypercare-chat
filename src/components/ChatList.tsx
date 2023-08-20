@@ -1,11 +1,16 @@
 import React,{useState} from 'react';
+import { Chats } from '../types';
 import './ChatList.css';
 
-const ChatList=({chatList}:any)=> {
+interface Props{
+    chatList:Chats[]
+}
 
-    const [activeChat, setActiveChat] = useState(null);
+const ChatList:React.FC<Props>=({chatList})=> {
 
-    const getTimeStamp = (time:any) => {
+    const [activeChat, setActiveChat] = useState<number |null>(null);
+
+    const getTimeStamp = (time:string) => {
         const date = new Date(time);
         const hours = date.getUTCHours();
         const minutes = date.getUTCMinutes();
@@ -13,10 +18,10 @@ const ChatList=({chatList}:any)=> {
         return timestamp
     }
 
-    const formatChatTitle = (chat:any, maxTitleLength:any) => {
+    const formatChatTitle = (chat:Chats, maxTitleLength:number) => {
         let chatTitle;
         if (!chat.title) {
-            const memberNames = chat.members.map((member: { firstname: any; }) => member.firstname).join(", ");
+            const memberNames = chat.members.map((member: { firstname: string; }) => member.firstname).join(", ");
             chatTitle = memberNames;
         } else {
             chatTitle = chat.title;
@@ -32,7 +37,7 @@ const ChatList=({chatList}:any)=> {
   return (
     <div className="chat-container">
     <div className="chat-list-container">
-        {chatList.map((chat:any, index:any) => (
+        {chatList.map((chat:Chats, index:number) => (
             <div
                 key={chat.chatId}
                 className={`chat-items ${activeChat === index ? 'active' : ''}`}
@@ -43,7 +48,7 @@ const ChatList=({chatList}:any)=> {
                     <div className="chat-title">{formatChatTitle(chat, 25)}</div>
                     <div className="chat-message">
                         {chat.lastMessage.sender.id === 'self' ? 'Me: ' : `${chat.lastMessage.sender.firstname}: `}
-                        {chat.lastMessage.message.length > 10 ? (chat.lastMessage.message.substring(0, 25)) + '...' : chat.lastMessage.message}
+                        {chat.lastMessage.message.length > 10 ? (chat.lastMessage.message.substring(0, 5)) + '...' : chat.lastMessage.message}
                     </div>
                 </div>
                 <div className="chat-timestamp">{getTimeStamp(chat.lastMessage.dateCreated)}</div>

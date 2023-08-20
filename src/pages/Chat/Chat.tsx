@@ -2,20 +2,21 @@ import React,{useState,useEffect} from 'react';
 import {accessToken,hypercareScope,baseURL, isPriority,limit} from '../../config';
 import ChatList from '../../components/ChatList';
 import axios from 'axios';
+import { Chats } from '../../types';
 
-const Chat= ()=> {
-    const [chats,setChats]=useState([]);
-    const [error,setError]=useState('');
+
+const Chat: React.FC= ()=> {
+    const [chats,setChats]=useState<Chats[]>([]);
+    const [error,setError]=useState<string>('');
 
     useEffect(()=>{
         const fetchChats = async ()=>{
-    
             const headers = {
                 "hypercare-scope": hypercareScope,
                 "Content-Type":"application/json",
                 "Authorization":`Bearer ${accessToken}`
             }
-    
+
             const query = `
             query organizationChats($continuationId: ID, $limit: Int, $isPriority: Boolean) {
               chatsForOrganization(continuationId: $continuationId, limit: $limit, isPriority: $isPriority) {
@@ -154,10 +155,10 @@ const Chat= ()=> {
     
      },[]) 
 
-     const sortedChatList = [...chats].slice().sort((a:any, b:any) => {
-        const dateA:any = new Date(a?.lastMessage?.dateCreated);
-        const dateB:any = new Date(b?.lastMessage?.dateCreated);
-        return dateB - dateA;
+     const sortedChatList = [...chats].slice().sort((a:Chats, b:Chats) => {
+        const dateA = new Date(a?.lastMessage?.dateCreated);
+        const dateB = new Date(b?.lastMessage?.dateCreated);
+        return dateB.getTime() - dateA.getTime();
     });
 
       if (error) return <p>Error: {error}</p>;
