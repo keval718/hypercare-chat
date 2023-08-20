@@ -11,13 +11,13 @@ const Chat: React.FC= ()=> {
     const [error,setError]=useState<string>('');
 
     useEffect(()=>{
-        const fetchChats = async ()=>{
+        const fetchChatsData = async ()=>{
             const headers = {
                 "hypercare-scope": hypercareScope,
                 "Content-Type":"application/json",
                 "Authorization":`Bearer ${accessToken}`
             }
-            
+
           const variables={
             isPriority,
             limit
@@ -41,7 +41,7 @@ const Chat: React.FC= ()=> {
             setError(error as string)
           }
         }
-        fetchChats()
+        fetchChatsData()
      },[]) 
 
      const sortedChatList = [...chats].slice().sort((a: Chats, b: Chats) => {
