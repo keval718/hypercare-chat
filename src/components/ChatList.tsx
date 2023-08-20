@@ -40,6 +40,9 @@ const ChatList:React.FC<ChatListProps>=({chatList})=> {
   return (
     <div className="chat-container">
     <div className="chat-list-container">
+        <div className='chat-list-heading'>
+            Messaging
+        </div>
         {chatList.map((chat:Chats, index:number) => (
             <div
                 key={chat.chatId}
