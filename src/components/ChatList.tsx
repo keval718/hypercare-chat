@@ -1,12 +1,13 @@
 import React,{useState} from 'react';
 import { Chats } from '../types';
+import { maxTitleLength } from '../config';
 import './ChatList.css';
 
-interface Props{
+interface ChatListProps{
     chatList:Chats[]
 }
 
-const ChatList:React.FC<Props>=({chatList})=> {
+const ChatList:React.FC<ChatListProps>=({chatList})=> {
 
     const [activeChat, setActiveChat] = useState<number |null>(null);
 
@@ -18,7 +19,7 @@ const ChatList:React.FC<Props>=({chatList})=> {
         return timestamp
     }
 
-    const formatChatTitle = (chat:Chats, maxTitleLength:number) => {
+    const formatChatTitle = (chat:Chats) => {
         let chatTitle;
         if (!chat.title) {
             const memberNames = chat.members.map((member: { firstname: string; }) => member.firstname).join(", ");
@@ -45,7 +46,7 @@ const ChatList:React.FC<Props>=({chatList})=> {
             >
                 <div className="chat-avatar">{chat.lastMessage?.sender?.profilePic}</div>
                 <div className="chat-details">
-                    <div className="chat-title">{formatChatTitle(chat, 25)}</div>
+                    <div className="chat-title">{formatChatTitle(chat)}</div>
                     <div className="chat-message">
                         {chat.lastMessage.sender.id === 'self' ? 'Me: ' : `${chat.lastMessage.sender.firstname}: `}
                         {chat.lastMessage.message.length > 10 ? (chat.lastMessage.message.substring(0, 5)) + '...' : chat.lastMessage.message}
