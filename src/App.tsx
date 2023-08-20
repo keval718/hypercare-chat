@@ -1,10 +1,10 @@
 import React from 'react';
 import './App.css';
-import ChatList from './components/ChatList';
+import Chat from './pages/Chat/Chat';
 function App() {
   return (
     <div className="App">
-    <ChatList/>
+    <Chat/>
     </div>
   );
 }

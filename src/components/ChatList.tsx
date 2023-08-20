@@ -1,160 +1,61 @@
-import React,{useState,useEffect} from 'react';
-import {accessToken,hypercareScope,baseURL, isPriority,limit} from '../config';
-import axios from 'axios';
+import React,{useState} from 'react';
 import './ChatList.css';
 
-const ChatList=()=> {
-    const [chats,setChats]=useState([]);
-    const [activeChat,setActiveChat]=useState(null);
-   
-     useEffect(()=>{
-       const fetchChats = async ()=>{
-   
-           const headers = {
-               "hypercare-scope": hypercareScope,
-               "Content-Type":"application/json",
-               "Authorization":`Bearer ${accessToken}`
-           }
-   
-           const query = `
-           query organizationChats($continuationId: ID, $limit: Int, $isPriority: Boolean) {
-             chatsForOrganization(continuationId: $continuationId, limit: $limit, isPriority: $isPriority) {
-               chats {
-                 ...basicChatFields
-                 unreadPriorityMessages
-               }
-             }
-           }
-           
-           fragment basicChatFields on Chat {
-             chatId: id
-             title
-             type
-             members {
-               ...chatMemberFields
-             }
-             lastMessage {
-               ...messageFields
-             }
-             muted
-             status
-             dateCreated
-             isArchived
-             unreadPriorityMessages
-           }
-           
-           fragment chatMemberFields on ChatMember {
-             id
-             firstname
-             lastname
-             username
-             role
-             profilePic {
-               url
-             }
-             status
-             privilege
-             workStatus
-             statusExpiryDate
-             statusDescription
-             workStatusProxy {
-               ...publicUserStatusFields
-             }
-           }
-           
-           fragment messageFields on Message {
-             id
-             priority
-             message
-             image
-             type
-             dateCreated
-             sender {
-               ...publicUserFields
-             }
-             readBy {
-               ...readReceiptFields
-             }
-             data {
-               __typename
-               ... on ConsultMessageData {
-                 mrn
-                 firstname
-                 lastname
-                 details
-               }
-             }
-           }
-           
-           fragment readReceiptFields on ReadReceipt {
-             messageId
-             user {
-               ...publicUserFields
-             }
-             timestamp
-           }
-           
-           fragment publicUserFields on PublicUser {
-             id
-             firstname
-             lastname
-             username
-             role
-             profilePic {
-               url
-             }
-             workStatus
-             statusDescription
-             workStatusProxy {
-               ...publicUserStatusFields
-             }
-           }
-           
-           fragment publicUserStatusFields on PublicUser {
-             id
-             firstname
-             lastname
-             username
-             role
-             profilePic {
-               url
-             }
-           }
-         `;
-   
-         const variables={
-           isPriority,
-           limit
-         }
-   
-         const data={
-           query,
-           variables
-         }
-         try{
-                const res = await axios.post(`${baseURL.hyperscopeURL}graphql/private`,JSON.stringify(data),{
-                    headers:headers
-                })
+const ChatList=({chatList}:any)=> {
 
-                if(res.status===200){
-                    console.log(res.data.data.chatsForOrganization.chats)
-                }
-                else
-                {
-                    console.error("Request Failed")
-                }
+    const [activeChat, setActiveChat] = useState(null);
 
-         }
-         catch(error){
-           console.log(error)
-         }
-       }
-   
-       fetchChats()
-   
-    },[])
+    const getTimeStamp = (time:any) => {
+        const date = new Date(time);
+        const hours = date.getUTCHours();
+        const minutes = date.getUTCMinutes();
+        let timestamp = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')} ${hours > 12 ? 'PM' : 'AM'}`;
+        return timestamp
+    }
+
+    const formatChatTitle = (chat:any, maxTitleLength:any) => {
+        let chatTitle;
+        if (!chat.title) {
+            const memberNames = chat.members.map((member: { firstname: any; }) => member.firstname).join(", ");
+            chatTitle = memberNames;
+        } else {
+            chatTitle = chat.title;
+        }
+        if (chatTitle.length > maxTitleLength) {
+            const remainingUsers = chat.members.length - 1;
+            return `${chatTitle.split(",")[0].trim()} + ${remainingUsers} people`;
+        }
+        return chatTitle;
+    };
+
+
   return (
-    <div>ChatList</div>
+    <div className="chat-container">
+    <div className="chat-list-container">
+        {chatList.map((chat:any, index:any) => (
+            <div
+                key={chat.chatId}
+                className={`chat-items ${activeChat === index ? 'active' : ''}`}
+                onClick={() => setActiveChat(index)}
+            >
+                <div className="chat-avatar">{chat.lastMessage?.sender?.profilePic}</div>
+                <div className="chat-details">
+                    <div className="chat-title">{formatChatTitle(chat, 25)}</div>
+                    <div className="chat-message">
+                        {chat.lastMessage.sender.id === 'self' ? 'Me: ' : `${chat.lastMessage.sender.firstname}: `}
+                        {chat.lastMessage.message.length > 10 ? (chat.lastMessage.message.substring(0, 25)) + '...' : chat.lastMessage.message}
+                    </div>
+                </div>
+                <div className="chat-timestamp">{getTimeStamp(chat.lastMessage.dateCreated)}</div>
+            </div>
+        ))}
+    </div>
+    <div className="chat-active-container">
+        {activeChat !== null && (
+            <div className="chat-active-heading">{chatList[activeChat]?.title || chatList[activeChat].members[0].firstname}</div>
+        )}
+    </div>
+</div>
   )
 }
 
