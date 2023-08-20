@@ -1,47 +1,44 @@
 export interface Chats {
     chatId: string;
-    title: string;
-    type: string;
-    members: ChatMember[];
-    lastMessage: Message;
-    muted: boolean;
-    status: string;
     dateCreated: string;
     isArchived: boolean;
+    lastMessage: Message;
+    members: ChatMember[];
+    muted: boolean;
+    status: string;
+    title: string;
+    type: string;
     unreadPriorityMessages: number;
+  }
+
+  interface Message {
+    data: {};
+    dateCreated: string;
+    id: number;
+    image: string;
+    message: string;
+    priority: string;
+    readBy: ReadReceiptFields[];
+    sender: PublicUserFields;
+    type: string;
   }
   
   interface ChatMember {
-    id: string;
     firstname: string;
+    id: string;
     lastname: string;
-    username: string;
-    role: string;
-    profilePic: {
-      url: string;
-    };
-    status: string;
     privilege: string;
-    workStatus: string;
+    profilePic: string;
+    role: string;
+    status: string;
     statusExpiryDate: string;
     statusDescription: string;
+    username: string;
+    workStatus: string;
     workStatusProxy: PublicUserStatusFields;
   }
-  
-  interface Message {
-    id: string;
-    priority: string;
-    message: string;
-    image: string;
-    type: string;
-    dateCreated: string;
-    sender: PublicUserFields;
-    readBy: ReadReceiptFields[];
-    data: {};
-  }
-  
   interface ReadReceiptFields {
-    messageId: string;
+    messageId: number;
     user: PublicUserFields;
     timestamp: string;
   }
@@ -64,8 +61,6 @@ export interface Chats {
     lastname: string;
     username: string;
     role: string;
-    profilePic: {
-      url: string;
-    };
+    profilePic:string;
   }
   

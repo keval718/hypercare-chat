@@ -155,17 +155,13 @@ const Chat: React.FC= ()=> {
     
      },[]) 
 
-     const sortedChatList = [...chats].slice().sort((a:Chats, b:Chats) => {
-        const dateA = new Date(a?.lastMessage?.dateCreated);
-        const dateB = new Date(b?.lastMessage?.dateCreated);
-        return dateB.getTime() - dateA.getTime();
+     const sortedChatList = [...chats].slice().sort((a: Chats, b: Chats) => {
+      return new Date(b?.lastMessage?.dateCreated).getTime() - new Date(a?.lastMessage?.dateCreated).getTime();
     });
-
-      if (error) return <p>Error: {error}</p>;
 
   return (
     <div>
-        <ChatList chatList={sortedChatList} />
+      {error ? <p>Error: {error}</p> : <ChatList chatList={sortedChatList} />}
     </div>
   )
 }
