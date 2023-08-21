@@ -7,9 +7,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 interface ChatListProps{
     chatList:Chats[],
-    setChats:any,
+    setChats:React.Dispatch<React.SetStateAction<Chats[]>>,
     showArchivedChats:boolean,
-    setShowArchivedChats:any
+    setShowArchivedChats:React.Dispatch<React.SetStateAction<boolean>>
 }
 
 
