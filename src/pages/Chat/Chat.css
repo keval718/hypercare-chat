@@ -1,0 +1,9 @@
+.archive-toggle{
+    font-weight: 600;
+    margin-left: 10px;
+    padding: 10px;
+}
+.archive-toggle-button{
+    font-weight: 900;
+    cursor: pointer;
+}
